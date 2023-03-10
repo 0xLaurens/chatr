@@ -26,10 +26,9 @@ async fn handler(ws: WebSocketUpgrade) -> Response {
 
 async fn handle_socket(mut socket: WebSocket) {
     while let Some(msg) = socket.recv().await {
-        let msg = if let Ok(msg) = msg {
-            msg
-        } else {
-            return;
+        let msg = match msg {
+            Ok(msg) => msg,
+            _ => return
         };
 
         if socket.send(msg).await.is_err() {
