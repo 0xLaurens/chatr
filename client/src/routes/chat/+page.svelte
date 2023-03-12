@@ -1,6 +1,8 @@
 <script lang="ts">
     import {onMount} from "svelte";
+
     let status = "🔴";
+    let statusTip = "Disconnected";
     let message = "";
     let messages = [];
     let socket: WebSocket;
@@ -9,10 +11,12 @@
         socket = new WebSocket("ws://localhost:3000/ws")
         socket.addEventListener("open", () => {
             status = "🟢"
+            statusTip = "Connected";
         })
 
         socket.addEventListener("close", () => {
             status = "🔴";
+            statusTip = "Disconnected";
         })
 
         socket.addEventListener('message', function (event) {
@@ -26,21 +30,20 @@
     };
 
 
-
 </script>
-
-<h1>Chat room</h1>
-<span>Connected: {status}</span>
-<div class="messages">
-    {#each messages as msg}
-    <div class="message">
-        {msg}
+<h1 class="text-3xl font-bold cursor-default">Chat Room <span class="tooltip" data-tip="{statusTip}">{status}</span>
+</h1>
+<div class="card h-96 bg-base-300 shadow-xl my-10">
+    <div class="card-body h-100">
+        {#each messages as msg}
+            <div>{msg}</div>
+        {/each}
     </div>
-    {/each}
 </div>
 
-<form on:submit|preventDefault={sendMessage}>
-    <input bind:value={message}>
-    <button>Send</button>
-</form>
-
+<div class="message-box flex justify-end">
+    <form on:submit|preventDefault={sendMessage}>
+        <input placeholder="Message" class="input input-bordered input-primary w-full sm:w-auto bg-base-200 mb-2" bind:value={message}>
+        <button class="btn btn-primary w-full sm:w-auto btn-wide">Send</button>
+    </form>
+</div>
