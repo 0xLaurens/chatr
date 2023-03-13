@@ -2,7 +2,7 @@
 A chat room built using websockets and Rust (Axum), users can connect to a server through a WebSocket connection and communicate with each other in real-time. 
 The client application is written in svelte.
 
-![image](https://user-images.githubusercontent.com/64641417/224757083-dcb7218e-614a-489e-a823-0ceefef23bcd.png)
+![image](https://user-images.githubusercontent.com/64641417/224826240-c6817bf4-e832-4164-b5c4-97c9725e1fec.png)
 The client for the chat room is written in Svelte
 
 ## Table of Contents
@@ -14,9 +14,10 @@ The client for the chat room is written in Svelte
 - [x] Message broadcasting
 - [x] Websocket
 - [x] Client application
-- [ ] Unique usernames
+- [x] Unique usernames
+- [x] Join/Leave messages
 - [ ] Multiple Rooms
-- [ ] Join/Leave messages
+
 
 ## Installation
 ```sh
