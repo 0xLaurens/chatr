@@ -6,8 +6,17 @@ The client application is written in svelte.
 The client for the chat room is written in Svelte
 
 ## Table of Contents
-* [Installation](#Installation)
-* [Usage](#Usage)
+* [Features](#features)
+* [Installation](#installation)
+* [Usage](#usage)
+
+## Features
+- [x] Message broadcasting
+- [x] Websocket
+- [x] Client application
+- [ ] Unique usernames
+- [ ] Multiple Rooms
+- [ ] Join/Leave messages
 
 ## Installation
 ```sh
