@@ -1,5 +1,6 @@
 <script lang="ts">
     import {onMount} from "svelte";
+    import {user} from "../../lib/stores/user";
 
     let status = "🔴";
     let statusTip = "Disconnected";
@@ -12,6 +13,8 @@
         socket.addEventListener("open", () => {
             status = "🟢"
             statusTip = "Connected";
+            socket.send($user);
+            console.log($user);
         })
 
         socket.addEventListener("close", () => {
@@ -37,7 +40,7 @@
 <div class="title flex justify-between">
     <h1 class="text-3xl font-bold cursor-default">Chat Room <span class="tooltip" data-tip="{statusTip}">{status}</span>
     </h1>
-    <button class="btn btn-secondary" on:click={clear_messages}>clear</button>
+    <button class="btn btn-accent" on:click={clear_messages}>clear</button>
 </div>
 <div class="card h-96 flex-grow bg-base-300 shadow-xl my-10">
     <div class="card-body">
