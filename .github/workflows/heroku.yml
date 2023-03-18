@@ -24,7 +24,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: chatr
+          name: backend
           path: './target/release/'
 
       - name: Build, Push and Release a Docker container to Heroku.
@@ -47,7 +47,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: chatr
+          name: backend
           path: './target/release/'
 
       - name: Build, Push and Release a Docker container to Heroku.
