@@ -1,4 +1,4 @@
-name: Rust
+name: Rust Backend
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
       - name: make dir
         run: mkdir app
       - name: copy
-        run: mv ./target/release/axum-deom ./app/axum
+        run: mv ./target/release/chatr ./app/chatr
 
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
@@ -22,5 +22,5 @@ jobs:
           heroku_email: ${{secrets.HEROKU_EMAIL}}
 
           appdir: "./app"
-          procfile: "web: ./axum"
+          procfile: "web: ./chatr"
           buildpack: "https://github.com/ph3nx/heroku-binary-buildpack.git"
