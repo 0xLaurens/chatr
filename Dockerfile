@@ -5,7 +5,7 @@ FROM alpine:latest
 COPY . .
 
 
-RUN chown -R root:root ./target
+RUN chown +x root:root ./target/release/chatr
 USER root
 
 CMD ["./target/release/chatr"]
