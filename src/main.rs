@@ -26,6 +26,7 @@ async fn main() {
         .with_state(app_state);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
+    println!("Hosted on {}", addr.to_string());
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await
@@ -84,7 +85,8 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
     tokio::select! {
         _ = (&mut send_messages) => recv_messages.abort(),
         _ = (&mut recv_messages) => send_messages.abort(),
-    };
+    }
+    ;
 
     let left = format!("{} left the chat!", username);
     let _ = tx.send(left);
