@@ -3,5 +3,6 @@
 ####################################################################################################
 FROM alpine:latest
 COPY . .
-RUN CHOWN +X "./target/release/chatr"
-CMD ["./target/release/chatr"]
+RUN chown -R run:run .
+USER run;
+CMD ["run", "./target/release/chatr"]
