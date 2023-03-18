@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {onMount} from "svelte";
+    import {onMount, onDestroy} from "svelte";
     import {user} from "../../lib/stores/user";
 
     let status = "🔴";
@@ -7,24 +7,54 @@
     let message = "";
     let messages = [];
     let socket: WebSocket;
+    let interval: number;
+    let delay = 2000;
+    let timeout = false;
+    $: {
+        if (interval || (!timeout && interval)) {
+            clearInterval(interval);
+        }
 
-    onMount(() => {
+        if (timeout == true) {
+            interval = setInterval(() => {
+                if (delay < 30_000) delay = delay * 2;
+                console.log("reconnecting in:", delay)
+                connect();
+            }, delay)
+        }
+    }
+
+    function connect() {
         socket = new WebSocket("ws://localhost:3000/ws")
         socket.addEventListener("open", () => {
             status = "🟢"
             statusTip = "Connected";
+            timeout = false;
             socket.send($user);
-            console.log($user);
         })
 
         socket.addEventListener("close", () => {
             status = "🔴";
             statusTip = "Disconnected";
+            if (timeout == false) {
+                delay = 2000;
+                timeout = true;
+            }
         })
 
         socket.addEventListener('message', function (event) {
             messages = [...messages, event.data]
         })
+    }
+
+    onMount(() => {
+        connect()
+    })
+
+    onDestroy(() => {
+        socket.close()
+        timeout = false
+        clearInterval(interval)
     })
 
     const sendMessage = () => {

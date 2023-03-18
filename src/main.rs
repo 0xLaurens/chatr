@@ -7,7 +7,7 @@ use axum::{
     extract::ws::{WebSocketUpgrade, WebSocket, Message},
 };
 use axum::extract::State;
-use axum::response::{Html, IntoResponse};
+use axum::response::{IntoResponse};
 use futures::{SinkExt, StreamExt};
 use tokio::sync::{broadcast};
 
@@ -22,7 +22,6 @@ async fn main() {
     let users = Mutex::new(HashSet::new());
     let app_state = Arc::new(AppState { users, tx });
     let app = Router::new()
-        .route("/", get(index))
         .route("/ws", get(handler))
         .with_state(app_state);
 
@@ -97,8 +96,4 @@ fn check_username(user: &str, state: &AppState, username: &mut String) {
         users.insert(user.to_owned());
         username.push_str(user);
     }
-}
-
-async fn index() -> Html<&'static str> {
-    Html(std::include_str!("../chat.html"))
 }
