@@ -1,0 +1,10 @@
+[build]
+base = "./client"
+command = "npm run build"
+publish = "build"
+
+[[redirects]]
+from = "ws://localhost:3000/*"
+to = "ws://chat-rust.herokuapp.com/:splat"
+status = 200
+force = true

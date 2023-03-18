@@ -1,6 +1,7 @@
 <script lang="ts">
     import {onMount, onDestroy} from "svelte";
     import {user} from "../../lib/stores/user";
+    import { goto } from '$app/navigation';
 
     let status = "🔴";
     let statusTip = "Disconnected";
@@ -27,6 +28,9 @@
     function connect() {
         socket = new WebSocket("ws://localhost:3000/ws")
         socket.addEventListener("open", () => {
+            if ($user) {
+                goto("/")
+            }
             status = "🟢"
             statusTip = "Connected";
             timeout = false;
@@ -43,6 +47,10 @@
         })
 
         socket.addEventListener('message', function (event) {
+            if (event.data == "Username already taken.") {
+                console.log("Duplicate username")
+                goto("/");
+            }
             messages = [...messages, event.data]
         })
     }

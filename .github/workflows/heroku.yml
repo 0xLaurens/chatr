@@ -1,0 +1,26 @@
+name: Rust Backend
+
+on:
+  push:
+    branches: [ "main" ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: cargo build --release
+      - name: make dir
+        run: mkdir app
+      - name: copy
+        run: mv ./target/release/chatr ./app/chatr
+
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
+
+          appdir: "./app"
+          procfile: "web: ./chatr"
+          buildpack: "https://github.com/ph3nx/heroku-binary-buildpack.git"
