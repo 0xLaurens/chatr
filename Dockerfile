@@ -15,4 +15,4 @@ FROM alpine:latest
 
 COPY --from=builder /chatr/target/release/chatr /bin/chatr
 
-ENTRYPOINT ["chatr"]
+CMD ["chatr"]
