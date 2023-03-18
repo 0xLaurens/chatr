@@ -14,5 +14,6 @@ RUN USER=root cargo build --release
 FROM alpine:latest
 
 COPY --from=builder /chatr/target/release/chatr /bin/chatr
+RUN ls /bin/chatr
 
-ENTRYPOINT ["chatr"]
+CMD ["chatr"]
