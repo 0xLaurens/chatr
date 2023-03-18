@@ -16,7 +16,7 @@ jobs:
             path: './target/release/'
 
   deploy-worker:
-    needs: build-artifacts
+    needs: build-application
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,7 +39,7 @@ jobs:
           process_type: worker
 
   deploy-web:
-    needs: build-artifacts
+    needs: build-application
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
