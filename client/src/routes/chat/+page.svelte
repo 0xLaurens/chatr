@@ -1,6 +1,7 @@
 <script lang="ts">
     import {onMount, onDestroy} from "svelte";
     import {user} from "../../lib/stores/user";
+    import {redirect} from "@sveltejs/kit";
 
     let status = "🔴";
     let statusTip = "Disconnected";
@@ -43,6 +44,10 @@
         })
 
         socket.addEventListener('message', function (event) {
+            if (event.data == "Username already taken.") {
+                console.log("Duplicate username")
+                location.href = "/"
+            }
             messages = [...messages, event.data]
         })
     }
