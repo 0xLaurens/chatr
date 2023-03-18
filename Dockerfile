@@ -6,4 +6,4 @@ COPY . .
 
 RUN chown -R root ./target
 
-CMD ["root", "./target/release/chatr"]
+CMD ["./target/release/chatr"]
