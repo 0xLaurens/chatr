@@ -13,7 +13,7 @@ RUN USER=root cargo build --release
 ####################################################################################################
 FROM alpine:latest
 
-COPY --from=builder /chatr/target/release/chatr /bin/chatr
-RUN ls /bin/chatr
+COPY --from=builder /chatr/target/release/chatr /chatr
+RUN ls -a
 
-CMD ["chatr"]
+CMD ["/chatr"]
