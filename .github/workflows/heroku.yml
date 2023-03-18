@@ -4,23 +4,59 @@ on:
   push:
     branches: [ "main" ]
 jobs:
-  build:
+  build-application:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Build
         run: cargo build --release
-      - name: make dir
-        run: mkdir app
-      - name: copy
-        run: mv ./target/release/chatr ./app/chatr
+      - uses: actions/upload-artifact@v3
+          with:
+            name: backend
+            path: './target/release/'
 
-      - uses: akhileshns/heroku-deploy@v3.12.12
+  deploy-worker:
+    needs: build-artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download artifact
+        uses: actions/download-artifact@v3
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          name: chatr
+          path: './target/release/'
 
-          appdir: "./app"
-          procfile: "web: ./chatr"
-          buildpack: "https://github.com/ph3nx/heroku-binary-buildpack.git"
+      - name: Build, Push and Release a Docker container to Heroku.
+        uses: gonuit/heroku-docker-deploy@v1.3.3
+        with:
+          email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          dockerfile_directory: .
+          dockerfile_name: Dockerfile
+          docker_options: "--no-cache"
+          process_type: worker
+
+  deploy-web:
+    needs: build-artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: chatr
+          path: './target/release/'
+
+      - name: Build, Push and Release a Docker container to Heroku.
+        uses: gonuit/heroku-docker-deploy@v1.3.3
+        with:
+          email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          dockerfile_directory: .
+          dockerfile_name: Dockerfile
+          docker_options: "--no-cache"
+          process_type: web
