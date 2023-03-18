@@ -3,6 +3,8 @@
 ####################################################################################################
 FROM alpine:latest
 COPY . .
+
 RUN chown -R run:run .
-USER run;
+USER run
+
 CMD ["run", "./target/release/chatr"]
