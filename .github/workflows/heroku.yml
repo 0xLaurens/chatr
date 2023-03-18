@@ -11,12 +11,12 @@ jobs:
       - name: Build
         run: cargo build --release
       - uses: actions/upload-artifact@v3
-          with:
-            name: backend
-            path: './target/release/'
+        with:
+          name: backend
+          path: './target/release/'
 
   deploy-worker:
-    needs: build-artifacts
+    needs: build-application
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,7 +39,7 @@ jobs:
           process_type: worker
 
   deploy-web:
-    needs: build-artifacts
+    needs: build-application
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
