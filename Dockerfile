@@ -1,10 +1,18 @@
 ####################################################################################################
+## Build image
+####################################################################################################
+FROM rust as builder
+
+WORKDIR /chatr
+COPY . .
+
+RUN USER=root cargo build --release
+
+####################################################################################################
 ## Final image
 ####################################################################################################
 FROM alpine:latest
-COPY . .
 
+COPY --from=builder /chatr/target/release/chatr /bin/chatr
 
-RUN chown 755 ./target/release/chatr
-
-CMD ["./target/release/chatr"]
+ENTRYPOINT ["chatr"]
