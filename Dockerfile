@@ -5,6 +5,6 @@ FROM alpine:latest
 COPY . .
 
 
-RUN chown a+x ./target/release/chatr
+RUN chown 755 ./target/release/chatr
 
 CMD ["./target/release/chatr"]
