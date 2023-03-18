@@ -3,17 +3,18 @@
 ####################################################################################################
 FROM rust as builder
 
-WORKDIR /chatr
-COPY . .
+RUN mkdir app
+WORKDIR /app
 
-RUN USER=root cargo build --release
+COPY ./ ./app
+
+RUN cargo build --release
 
 ####################################################################################################
 ## Final image
 ####################################################################################################
 FROM alpine:latest
 
-COPY --from=builder /chatr/target/release/chatr ./chatr
-RUN ls -a
+COPY --from=builder /app/target/release/chatr /
 
 CMD ["./chatr"]
