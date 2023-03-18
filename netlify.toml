@@ -8,8 +8,3 @@ from = "ws://localhost:3000/*"
 to = "ws://chat-rust.herokuapp.com/:splat"
 status = 200
 force = true
-
-from = "http://localhost:3000/api/*"
-to = "https://chat-rust.herokuapp.com/api/:splat"
-status = 200
-force = true
