@@ -1,10 +1,21 @@
 <script lang="ts">
     import {user} from "$lib/stores/user"
-    import { goto } from '$app/navigation';
+    import {goto} from '$app/navigation';
+    import {onMount} from "svelte";
+
+
+    onMount(async () => {
+        const res = await fetch(`http://localhost:3000/rooms`, {
+            method: 'GET',
+        });
+        const data = await res.json()
+        console.log(data);
+    })
+
 
     let username = "";
     const join_room = () => {
-        if(username.length < 1) {
+        if (username.length < 1) {
             username = "user" + Math.floor(Math.random() * 1000);
         }
 
