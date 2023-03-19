@@ -1,0 +1,8 @@
+client/
+target/
+.idea/
+.github/
+.git/
+.gitignore
+netlify.toml
+README.md
