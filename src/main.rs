@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::net::SocketAddr;
 use std::sync::{Arc, Mutex};
 use axum::{
@@ -12,8 +12,21 @@ use futures::{SinkExt, StreamExt};
 use tokio::sync::{broadcast};
 
 struct AppState {
+    rooms: Mutex<HashMap<String, RoomState>>,
+}
+
+struct RoomState {
     users: Mutex<HashSet<String>>,
     tx: broadcast::Sender<String>,
+}
+
+impl RoomState {
+    fn new(&self) -> self {
+        Self {
+            users: Mutex::new(HashSet::new()),
+            tx: broadcast::channel(69).0,
+        }
+    }
 }
 
 #[tokio::main]
