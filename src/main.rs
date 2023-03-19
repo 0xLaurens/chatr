@@ -85,6 +85,7 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
             let connect: Connect = match serde_json::from_str(&name) {
                 Ok(connect) => connect,
                 Err(err) => {
+                    println!("{}", &name);
                     println!("{}", err);
                     let _ = sender.send(Message::from("Failed to connect to room!")).await;
                     break;

@@ -1,6 +1,6 @@
 <script lang="ts">
     import {onMount, onDestroy} from "svelte";
-    import {user} from "../../lib/stores/user";
+    import {user, channel} from "../../lib/stores/user";
     import { goto } from '$app/navigation';
 
     let status = "🔴";
@@ -28,13 +28,14 @@
     function connect() {
         socket = new WebSocket("ws://localhost:3000/ws")
         socket.addEventListener("open", () => {
-            if ($user) {
+            if (!$user || !channel) {
                 goto("/")
             }
+
             status = "🟢"
             statusTip = "Connected";
             timeout = false;
-            socket.send($user);
+            socket.send(`{"username": "${$user}", "channel": "${$channel}"}`);
         })
 
         socket.addEventListener("close", () => {
