@@ -11,6 +11,7 @@ use axum::response::{IntoResponse};
 use futures::{SinkExt, StreamExt};
 use tokio::sync::{broadcast};
 use serde::Deserialize;
+use serde_json::json;
 
 struct AppState {
     rooms: Mutex<HashMap<String, RoomState>>,
@@ -44,6 +45,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(|| async { "Hello World!" }))
         .route("/ws", get(handler))
+        .route("/rooms", get(get_rooms))
         .with_state(app_state);
 
     println!("Hosted on {}", addr.to_string());
@@ -124,7 +126,6 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
     let mut send_messages = {
         let tx = tx.clone();
         let name = username.clone();
-
         tokio::spawn(async move {
             while let Some(Ok(Message::Text(text))) = receiver.next().await {
                 let _ = tx.send(format!("{}: {}", name, text));
@@ -142,4 +143,19 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
     let _ = tx.send(left);
     let mut rooms = state.rooms.lock().unwrap();
     rooms.get_mut(&channel).unwrap().users.lock().unwrap().remove(&username);
+}
+
+async fn get_rooms(State(state): State<Arc<AppState>>) -> String {
+    let rooms = state.rooms.lock().unwrap();
+    let vec = rooms.keys().into_iter().collect::<Vec<&String>>();
+    match vec.len() {
+        0 => json!({
+            "status": "No rooms found yet!",
+            "rooms": []
+        }).to_string(),
+        _ => json!({
+            "status": "Success!",
+            "rooms": vec
+        }).to_string()
+    }
 }
