@@ -1,6 +1,6 @@
 <script lang="ts">
     import {user, channel} from "$lib/stores/user"
-    import {goto} from '$app/navigation';
+    import {goto, invalidate} from '$app/navigation';
 
     let status, rooms;
     export let data;
@@ -19,6 +19,10 @@
     const filled_in = () => {
         return !(username.length > 0 && room.length > 0);
     };
+
+    const reload = () => {
+        invalidate("http://localhost:3000/rooms");
+    }
 </script>
 
 <div class="flex flex-col justify-center">
@@ -28,9 +32,12 @@
     <div class="join self-center">
     </div>
     <div class="rooms self-center my-5">
-        <h2 class="text-xl font-bold py-2">
-            List of active chatrooms:
-        </h2>
+        <div class="flex justify-between py-2">
+            <h2 class="text-xl font-bold ">
+                List of active chatroom's
+            </h2>
+            <button class="btn btn-square btn-sm btn-accent" on:click={reload}>↻</button>
+        </div>
         {#if status && rooms.length < 1}
             <div class="card bg-base-300 w-96 shadow-xl text-center">
                 <div class="card-body">
