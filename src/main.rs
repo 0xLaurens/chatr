@@ -10,6 +10,7 @@ use axum::extract::State;
 use axum::response::{IntoResponse};
 use futures::{SinkExt, StreamExt};
 use tokio::sync::{broadcast};
+use serde::Deserialize;
 
 struct AppState {
     rooms: Mutex<HashMap<String, RoomState>>,
@@ -21,7 +22,7 @@ struct RoomState {
 }
 
 impl RoomState {
-    fn new(&self) -> self {
+    fn new() -> Self {
         Self {
             users: Mutex::new(HashSet::new()),
             tx: broadcast::channel(69).0,
@@ -36,9 +37,10 @@ async fn main() {
         .unwrap_or(Ok(3000)).unwrap();
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
 
-    let (tx, _rx) = broadcast::channel(69);
-    let users = Mutex::new(HashSet::new());
-    let app_state = Arc::new(AppState { users, tx });
+    let app_state = Arc::new(AppState {
+        rooms: Mutex::new(HashMap::new())
+    });
+
     let app = Router::new()
         .route("/", get(|| async { "Hello World!" }))
         .route("/ws", get(handler))
@@ -59,23 +61,53 @@ async fn handler(ws: WebSocketUpgrade,
 
 async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
     let (mut sender, mut receiver) = socket.split();
-
     let mut username = String::new();
+    let mut channel = String::new();
+    let mut tx = None::<broadcast::Sender<String>>;
+
     while let Some(Ok(msg)) = receiver.next().await {
-        if let Message::Text(user) = msg {
-            check_username(&user, &state, &mut username);
-            if !username.is_empty() {
+        if let Message::Text(name) = msg {
+            #[derive(Deserialize)]
+            struct Connect {
+                username: String,
+                channel: String,
+            }
+
+            let connect: Connect = match serde_json::from_str(&name) {
+                Ok(connect) => connect,
+                Err(err) => {
+                    println!("{}", err);
+                    let _ = sender.send(Message::from("Failed to connect to room!")).await;
+                    break;
+                }
+            };
+
+            {
+                let mut rooms = state.rooms.lock().unwrap();
+                channel = connect.channel.clone();
+
+                let room = rooms.entry(connect.channel).or_insert_with(RoomState::new);
+                tx = Some(room.tx.clone());
+
+                if !room.users.lock().unwrap().contains(&connect.username) {
+                    room.users.lock().unwrap().insert(connect.username.to_owned());
+                    username = connect.username.clone();
+                }
+            }
+
+            if tx.is_some() && !username.is_empty() {
                 break;
             } else {
                 let _ = sender
                     .send(Message::Text(String::from("Username already taken.")))
                     .await;
+
+                return;
             }
         }
-    }
+    };
 
-
-    let tx = state.tx.clone();
+    let tx = tx.unwrap();
     let mut rx = tx.subscribe();
 
     let joined = format!("{} joined the chat!", username);
@@ -108,12 +140,6 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
 
     let left = format!("{} left the chat!", username);
     let _ = tx.send(left);
-}
-
-fn check_username(user: &str, state: &AppState, username: &mut String) {
-    let mut users = state.users.lock().unwrap();
-    if !users.contains(user) {
-        users.insert(user.to_owned());
-        username.push_str(user);
-    }
+    let mut rooms = state.rooms.lock().unwrap();
+    rooms.get_mut(&channel).unwrap().users.lock().unwrap().remove(&username);
 }
