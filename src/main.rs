@@ -143,6 +143,10 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
     let _ = tx.send(left);
     let mut rooms = state.rooms.lock().unwrap();
     rooms.get_mut(&channel).unwrap().users.lock().unwrap().remove(&username);
+
+    if rooms.get_mut(&channel).unwrap().users.lock().unwrap().len() == 0 {
+        rooms.remove(&channel);
+    }
 }
 
 async fn get_rooms(State(state): State<Arc<AppState>>) -> String {
