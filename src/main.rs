@@ -18,14 +18,19 @@ struct AppState {
 
 #[tokio::main]
 async fn main() {
+    let port = std::env::var("PORT")
+        .map(|val| val.parse::<u16>())
+        .unwrap_or(Ok(3000)).unwrap();
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
+
     let (tx, _rx) = broadcast::channel(69);
     let users = Mutex::new(HashSet::new());
     let app_state = Arc::new(AppState { users, tx });
     let app = Router::new()
+        .route("/", get(|| async { "Hello World!" }))
         .route("/ws", get(handler))
         .with_state(app_state);
 
-    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
     println!("Hosted on {}", addr.to_string());
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
