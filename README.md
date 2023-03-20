@@ -16,7 +16,7 @@ The client for the chat room is written in Svelte
 - [x] Client application
 - [x] Unique usernames
 - [x] Join/Leave messages
-- [ ] Multiple Rooms
+- [x] Multiple Rooms
 
 
 ## Installation
