@@ -22,7 +22,7 @@
     };
 
     const reload = () => {
-        invalidate(`http://${env.PUBLIC_API_URL}/rooms`);
+        invalidate(`${env.PUBLIC_API_URL}/rooms`);
     }
 </script>
 
