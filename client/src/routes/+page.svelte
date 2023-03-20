@@ -2,6 +2,7 @@
     import {user, channel} from "$lib/stores/user"
     import {goto, invalidate} from '$app/navigation';
     import { env } from '$env/dynamic/public'
+    import toast, {Toaster} from 'svelte-french-toast';
 
     let status, rooms;
     export let data;
@@ -22,10 +23,12 @@
     };
 
     const reload = () => {
+        toast.success("Reloaded rooms")
         invalidate(`${env.PUBLIC_API_URL}/rooms`);
     }
 </script>
 
+<Toaster/>
 <div class="flex flex-col justify-center">
     <div class="title">
         <h1 class="text-3xl font-bold text-center">Chatr: a Websocket chatroom</h1>
