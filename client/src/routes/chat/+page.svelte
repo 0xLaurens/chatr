@@ -1,7 +1,8 @@
 <script lang="ts">
     import {onMount, onDestroy} from "svelte";
-    import {user} from "../../lib/stores/user";
-    import { goto } from '$app/navigation';
+    import {user, channel} from "../../lib/stores/user";
+    import {goto} from '$app/navigation';
+    import { env } from '$env/dynamic/public'
 
     let status = "🔴";
     let statusTip = "Disconnected";
@@ -26,15 +27,12 @@
     }
 
     function connect() {
-        socket = new WebSocket("ws://localhost:3000/ws")
+        socket = new WebSocket(`${env.PUBLIC_WEBSOCKET_URL}/ws`)
         socket.addEventListener("open", () => {
-            if ($user) {
-                goto("/")
-            }
             status = "🟢"
             statusTip = "Connected";
             timeout = false;
-            socket.send($user);
+            socket.send(`{"username": "${$user}", "channel": "${$channel}"}`);
         })
 
         socket.addEventListener("close", () => {
@@ -48,7 +46,6 @@
 
         socket.addEventListener('message', function (event) {
             if (event.data == "Username already taken.") {
-                console.log("Duplicate username")
                 goto("/");
             }
             messages = [...messages, event.data]
@@ -56,13 +53,21 @@
     }
 
     onMount(() => {
+        if ($user.length < 1 || $channel.length < 1) {
+            goto("/");
+        }
+
         connect()
     })
 
     onDestroy(() => {
-        socket.close()
+        if (socket) {
+            socket.close()
+        }
+        if (interval) {
+            clearInterval(interval)
+        }
         timeout = false
-        clearInterval(interval)
     })
 
     const sendMessage = () => {
