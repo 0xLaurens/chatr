@@ -2,7 +2,7 @@
     import {onMount, onDestroy} from "svelte";
     import {user, channel} from "../../lib/stores/user";
     import {goto} from '$app/navigation';
-    import {PUBLIC_API_URL} from "$env/static/public"
+    import { env } from '$env/dynamic/public'
 
     let status = "🔴";
     let statusTip = "Disconnected";
@@ -27,7 +27,7 @@
     }
 
     function connect() {
-        socket = new WebSocket(`ws://${PUBLIC_API_URL}/ws`)
+        socket = new WebSocket(`ws://${env.PUBLIC_API_URL}/ws`)
         socket.addEventListener("open", () => {
             status = "🟢"
             statusTip = "Connected";
