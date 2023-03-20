@@ -7,11 +7,13 @@ use axum::{
     extract::ws::{WebSocketUpgrade, WebSocket, Message},
 };
 use axum::extract::State;
+use axum::http::Method;
 use axum::response::{IntoResponse};
 use futures::{SinkExt, StreamExt};
 use tokio::sync::{broadcast};
 use serde::Deserialize;
 use serde_json::json;
+use tower_http::cors::{Any, CorsLayer};
 
 struct AppState {
     rooms: Mutex<HashMap<String, RoomState>>,
@@ -42,11 +44,16 @@ async fn main() {
         rooms: Mutex::new(HashMap::new())
     });
 
+    let cors = CorsLayer::new()
+        .allow_origin(Any)
+        .allow_methods(vec![Method::GET]);
+
     let app = Router::new()
         .route("/", get(|| async { "Hello World!" }))
         .route("/ws", get(handler))
         .route("/rooms", get(get_rooms))
-        .with_state(app_state);
+        .with_state(app_state)
+        .layer(cors);
 
     println!("Hosted on {}", addr.to_string());
     axum::Server::bind(&addr)
@@ -78,6 +85,7 @@ async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
             let connect: Connect = match serde_json::from_str(&name) {
                 Ok(connect) => connect,
                 Err(err) => {
+                    println!("{}", &name);
                     println!("{}", err);
                     let _ = sender.send(Message::from("Failed to connect to room!")).await;
                     break;
