@@ -2,7 +2,7 @@
     import {user, channel} from "$lib/stores/user"
     import {goto, invalidate} from '$app/navigation';
     import { env } from '$env/dynamic/public'
-    import toast, {Toaster} from 'svelte-french-toast';
+    import toast from 'svelte-french-toast';
 
     let status, rooms;
     export let data;
@@ -28,7 +28,6 @@
     }
 </script>
 
-<Toaster/>
 <div class="flex flex-col justify-center">
     <div class="title">
         <h1 class="text-3xl font-bold text-center">Chatr: a Websocket chatroom</h1>

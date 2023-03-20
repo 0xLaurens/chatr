@@ -3,6 +3,7 @@
     import {user, channel} from "../../lib/stores/user";
     import {goto} from '$app/navigation';
     import {env} from '$env/dynamic/public'
+    import toast from "svelte-french-toast";
 
     let status = "🔴";
     let statusTip = "Disconnected";
@@ -46,14 +47,17 @@
 
         socket.addEventListener('message', function (event) {
             if (event.data == "Username already taken.") {
+                toast.error(event.data)
                 goto("/");
+            } else {
+                messages = [...messages, event.data]
             }
-            messages = [...messages, event.data]
         })
     }
 
     onMount(() => {
             if ($user.length < 1 || $channel.length < 1) {
+                toast.error("Something went wrong!")
                 goto("/");
             } else {
                 connect()
