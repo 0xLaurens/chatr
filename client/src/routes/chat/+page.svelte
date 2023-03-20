@@ -2,7 +2,7 @@
     import {onMount, onDestroy} from "svelte";
     import {user, channel} from "../../lib/stores/user";
     import {goto} from '$app/navigation';
-    import { env } from '$env/dynamic/public'
+    import {env} from '$env/dynamic/public'
 
     let status = "🔴";
     let statusTip = "Disconnected";
@@ -53,12 +53,13 @@
     }
 
     onMount(() => {
-        if ($user.length < 1 || $channel.length < 1) {
-            goto("/");
+            if ($user.length < 1 || $channel.length < 1) {
+                goto("/");
+            } else {
+                connect()
+            }
         }
-
-        connect()
-    })
+    )
 
     onDestroy(() => {
         if (socket) {
