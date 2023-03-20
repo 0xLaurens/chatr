@@ -1,6 +1,7 @@
 <script lang="ts">
     import {user, channel} from "$lib/stores/user"
     import {goto, invalidate} from '$app/navigation';
+    import {PUBLIC_API_URL} from '$env/static/public'
 
     let status, rooms;
     export let data;
@@ -21,7 +22,7 @@
     };
 
     const reload = () => {
-        invalidate("http://localhost:3000/rooms");
+        invalidate(`http://${PUBLIC_API_URL}/rooms`);
     }
 </script>
 
