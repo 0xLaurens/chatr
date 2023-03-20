@@ -27,7 +27,7 @@
     }
 
     function connect() {
-        socket = new WebSocket(`ws://${env.PUBLIC_API_URL}/ws`)
+        socket = new WebSocket(`${env.PUBLIC_WEBSOCKET_URL}/ws`)
         socket.addEventListener("open", () => {
             status = "🟢"
             statusTip = "Connected";
