@@ -39,6 +39,10 @@ Run the application
 cargo run
 ```
 ### Frontend
+Navigate into the frontend
+```sh
+cd client 
+```
 Install packages using
 ```sh
 npm i 
