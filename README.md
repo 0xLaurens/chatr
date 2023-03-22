@@ -17,6 +17,8 @@ The client for the chat room is written in Svelte
 - [x] Unique usernames
 - [x] Join/Leave messages
 - [x] Multiple Rooms
+- [ ] Scrolling chat
+- [ ] View members of room
 
 
 ## Installation
@@ -30,10 +32,6 @@ cd chatr
 ## Usage
 
 ### Server
-Install the required dependancies
-```rust
-cargo install
-```
 Run the application
 ```rust
 cargo run
