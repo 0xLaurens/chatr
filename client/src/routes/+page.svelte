@@ -24,7 +24,11 @@
 
     const reload = () => {
         toast.success("Reloaded rooms")
-        invalidate(`${env.PUBLIC_API_URL}/rooms`);
+        let url = `${env.PUBLIC_API_URL}`;
+        if (url.endsWith("/")) {
+            url = url.slice(0, -1);
+        }
+        invalidate(`${url}/rooms`);
     }
 </script>
 

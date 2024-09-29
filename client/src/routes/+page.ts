@@ -3,7 +3,11 @@ import {env} from "$env/dynamic/public";
 
 export const load: PageLoad = async ({fetch}) => {
     try {
-        const res = await fetch(`${env.PUBLIC_API_URL}/rooms`);
+        let url = `${env.PUBLIC_API_URL}`;
+        if (url.endsWith("/")) {
+            url = url.slice(0, -1);
+        }
+        const res = await fetch(`${url}/rooms`);
         return await res.json();
     } catch (e) {
         return {
