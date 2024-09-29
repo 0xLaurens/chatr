@@ -51,10 +51,9 @@ Navigate into the frontend
 cd client
 ```
 
-Create a .env file containing the following variables
-
+Create a .env file in the `client` folder  containing the following variables:
 ```sh
-PUBLIC_API_URL=http://0.0.0.0:3000/
+PUBLIC_API_URL=http://0.0.0.0:3000
 PUBLIC_WEBSOCKET_URL=ws://localhost:3000
 ```
 
