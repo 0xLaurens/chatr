@@ -10,9 +10,9 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^2.0.0",
-		"@sveltejs/adapter-netlify": "^1.0.0-next.88",
-		"@sveltejs/kit": "^1.15.2",
+		"@sveltejs/adapter-auto": "^4.0.0",
+		"@sveltejs/adapter-netlify": "^4.4.0",
+		"@sveltejs/kit": "^2.15.3",
 		"@tailwindcss/typography": "^0.5.9",
 		"autoprefixer": "^10.4.14",
 		"daisyui": "^2.51.3",
@@ -26,7 +26,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@sveltejs/adapter-static": "^2.0.1",
+		"@sveltejs/adapter-static": "^3.0.8",
 		"svelte-french-toast": "^1.0.4-beta.0",
 		"svelte-preprocess": "^5.0.1"
 	}
