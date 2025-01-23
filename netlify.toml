@@ -5,6 +5,6 @@ publish = "build"
 
 [[redirects]]
 from = "ws://localhost:3000/*"
-to = "ws://chat-rust.herokuapp.com/:splat"
+to = "wss://chatr-api.0xlaurens.com/:splat"
 status = 200
 force = true
